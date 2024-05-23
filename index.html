@@ -35,7 +35,7 @@
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <button id="start-button">Let's Play</button>
+    <button id="start-button">เริ่มเกม</button>
 
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" class="hidden">
       <a-assets>
@@ -74,26 +74,32 @@
 
       function handleError(error) {
         console.error('Error getting location', error);
-        alert('Error getting location: ' + error.message);
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('Please allow location access to play this game.');
+        } else {
+          alert('Error getting location: ' + error.message);
+        }
       }
 
       document.getElementById('target-box').addEventListener('click', function () {
         score += 10;
         alert('You found the box! Your score: ' + score);
-        // Move the box to a new random location
+        // Move the box to a new random location within a small range
         const newLatitude = getRandomLatitude();
         const newLongitude = getRandomLongitude();
         this.setAttribute('gps-entity-place', `latitude: ${newLatitude}; longitude: ${newLongitude};`);
       });
 
       function getRandomLatitude() {
-        // Replace with your logic to get a random latitude
-        return Math.random() * 180 - 90;
+        // Generate a random latitude within 0.0001 degrees (~11 meters) of the current latitude
+        const currentLatitude = parseFloat(document.getElementById('target-box').getAttribute('gps-entity-place').latitude);
+        return currentLatitude + (Math.random() - 0.5) * 0.0002;
       }
 
       function getRandomLongitude() {
-        // Replace with your logic to get a random longitude
-        return Math.random() * 360 - 180;
+        // Generate a random longitude within 0.0001 degrees (~11 meters) of the current longitude
+        const currentLongitude = parseFloat(document.getElementById('target-box').getAttribute('gps-entity-place').longitude);
+        return currentLongitude + (Math.random() - 0.5) * 0.0002;
       }
     </script>
   </body>
