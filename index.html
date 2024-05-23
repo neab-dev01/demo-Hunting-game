@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AR Hunting Game</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.6/aframe/build/aframe-ar.js"></script>
+    <style>
+      #start-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 40px;
+        font-size: 24px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+      #start-button:hover {
+        background-color: #0056b3;
+      }
+      #start-button:active {
+        background-color: #004080;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <button id="start-button">Let's Play</button>
+
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" class="hidden">
+      <a-assets>
+        <!-- Add assets like models or textures here -->
+      </a-assets>
+
+      <a-entity id="target-box" gps-entity-place="latitude: 0; longitude: 0;" geometry="primitive: box" material="color: red;" event-set__click="_event: click; material.color: green;"></a-entity>
+      <a-light type="directional" position="0 1 0" intensity="0.6"></a-light>
+      <a-light type="ambient" color="#888"></a-light>
+      <a-camera gps-camera rotation-reader></a-camera>
+    </a-scene>
+
+    <script>
+      let score = 0;
+
+      document.getElementById('start-button').addEventListener('click', function() {
+        this.classList.add('hidden');
+        document.querySelector('a-scene').classList.remove('hidden');
+        startGame();
+      });
+
+      function startGame() {
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+        } else {
+          console.error('Geolocation is not supported by this browser.');
+        }
+      }
+
+      function updatePosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const box = document.getElementById('target-box');
+        box.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
+      }
+
+      function handleError(error) {
+        console.error('Error getting location', error);
+        alert('Error getting location: ' + error.message);
+      }
+
+      document.getElementById('target-box').addEventListener('click', function () {
+        score += 10;
+        alert('You found the box! Your score: ' + score);
+        // Move the box to a new random location
+        const newLatitude = getRandomLatitude();
+        const newLongitude = getRandomLongitude();
+        this.setAttribute('gps-entity-place', `latitude: ${newLatitude}; longitude: ${newLongitude};`);
+      });
+
+      function getRandomLatitude() {
+        // Replace with your logic to get a random latitude
+        return Math.random() * 180 - 90;
+      }
+
+      function getRandomLongitude() {
+        // Replace with your logic to get a random longitude
+        return Math.random() * 360 - 180;
+      }
+    </script>
+  </body>
+</html>
