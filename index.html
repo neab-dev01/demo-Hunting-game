@@ -42,7 +42,7 @@
         <!-- Add assets like models or textures here -->
       </a-assets>
 
-      <a-entity id="target-box" gps-entity-place="latitude: 0; longitude: 0;" geometry="primitive: box" material="color: red;" event-set__click="_event: click; material.color: green;"></a-entity>
+      <a-entity id="target-box" gps-entity-place="latitude: 13.736717; longitude: 100.523186;" geometry="primitive: box" material="color: red;" event-set__click="_event: click; material.color: green;"></a-entity>
       <a-light type="directional" position="0 1 0" intensity="0.6"></a-light>
       <a-light type="ambient" color="#888"></a-light>
       <a-camera gps-camera rotation-reader></a-camera>
@@ -91,15 +91,15 @@
       });
 
       function getRandomLatitude() {
-        // Generate a random latitude within 0.0001 degrees (~11 meters) of the current latitude
+        // Generate a random latitude within 0.0002 degrees (~22 meters) of the current latitude
         const currentLatitude = parseFloat(document.getElementById('target-box').getAttribute('gps-entity-place').latitude);
-        return currentLatitude + (Math.random() - 0.5) * 0.0002;
+        return currentLatitude + (Math.random() - 0.5) * 0.0004;
       }
 
       function getRandomLongitude() {
-        // Generate a random longitude within 0.0001 degrees (~11 meters) of the current longitude
+        // Generate a random longitude within 0.0002 degrees (~22 meters) of the current longitude
         const currentLongitude = parseFloat(document.getElementById('target-box').getAttribute('gps-entity-place').longitude);
-        return currentLongitude + (Math.random() - 0.5) * 0.0002;
+        return currentLongitude + (Math.random() - 0.5) * 0.0004;
       }
     </script>
   </body>
